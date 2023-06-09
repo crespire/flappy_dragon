@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>DragonRuby Source Code Backup</title>
+    <link href="src_backup.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <script>
+      async function submitForm() {
+          const result = await fetch("/dragon/eval/", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: '$gtk.open_game_dir "../tmp/src_backup/archived"' }),
+          });
+      }
+    </script>
+    <h1>Backup Archive</h1>
+    <form>
+      Location: file:///home/crespire/projects/test/dragonruby-linux-amd64/tmp/src_backup/archived
+      <br/>
+      <input type="button" value="Open Archive on Computer" onclick="submitForm();" />
+    </form>
+    <h1>Recently Changed</h1>
+    <ul><li><a href='/src_backup_app_main.rb'>app/main.rb</a></li></ul>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+#!/bin/sh
+cd "`dirname "$0"`"
+
+cd ..
+cd ..
+cd ..
+exec ./dragonruby samples/13_path_finding_algorithms/03_breadcrumbs

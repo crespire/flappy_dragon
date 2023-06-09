@@ -1,0 +1,10 @@
+devid=dragonruby
+devtitle=DragonRuby LLC
+gameid=textureatlases
+gametitle=Texture Atlases
+version=1.0
+icon=metadata/icon.png
+hd=true
+sprites_directory=sprites
+allscreen=true
+allscreen_max_scale=400

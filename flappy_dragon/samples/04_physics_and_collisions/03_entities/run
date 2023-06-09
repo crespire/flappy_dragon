@@ -1,0 +1,7 @@
+#!/bin/sh
+cd "`dirname "$0"`"
+
+cd ..
+cd ..
+cd ..
+exec ./dragonruby samples/04_physics_and_collisions/03_entities

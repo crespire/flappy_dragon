@@ -1,0 +1,30 @@
+* 000000 [Engine] Log started at 2023/6/9 10:39:37
+* 000000 [Engine] This copy of the engine is git hash 89f47ead267deeeefeb88be510e56efaf9418878, built on Jun  5 2023, at 19:13:55
+* 000000 [Engine] Platform: Linux
+* 000000 [Engine] 
+* 000000 [Engine] *******************************************************************************************
+* 000000 [Engine] *** This is the Standard license build!                                                 ***
+* 000000 [Engine] *** Get more with an Indie or Pro license such as C extensions, mobile dev, and VR dev! ***
+* 000000 [Engine] *** Details at http://dragonruby.org/toolkit/game#purchase                              ***
+* 000000 [Engine] *******************************************************************************************
+* 000000 [Engine] 
+- 000000 [Engine] Game Dir: samples/01_rendering_basics/01_labels
+- 000000 [Engine] Game ID: sample-app
+- 000000 [Engine] Game Title: Sample App
+- 000000 [Engine] Game Version: 1.0
+- 000000 [Engine] Game Package ID: org.dragonruby.sample-app
+- 000000 [Engine] Game Developer ID: dragonruby
+- 000000 [Engine] Game Developer Title: DragonRuby LLC
+- 000000 [Engine] Production Build: no
+- 000000 [Engine] Remote Hotload: no
+- 000000 [Render] SDL video backend: x11
+- 000000 [Render] SDL renderer backend: opengl
+- 000000 [Render] Window size: 1280x720 (requested 1280x720)
+- 000000 [Render] Fullscreen Desktop mode: no
+- 000000 [Render] Allow HighDPI: no
+- 000000 [Render] Max texture size: 16384x16384 (system reported 16384x16384)
+- 000000 [Render] Logical render size: 1280x720
+? 000000 [Engine] RNG seed has been set to 1686321577.
+- 000000 [Engine] Janitor is using 1 threads.
+? 000000 [Engine] Marked app/main.rb for reload. (-1)
+* 000056 [Engine] Logging shutting down

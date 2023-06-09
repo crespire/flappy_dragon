@@ -1,0 +1,7 @@
+#!/bin/sh
+cd "`dirname "$0"`"
+
+cd ..
+cd ..
+cd ..
+exec ./dragonruby samples/13_path_finding_algorithms/01_breadth_first_search --replay replay.txt $1 $2

@@ -1,0 +1,479 @@
+* 4.15
+** [Bug] Removed mouse wheel debug statements.
+** [Bug] Fixed regression where ~args.inputs.mouse.click~ no longer returned true for middle and right mouse buttons.
+** [Support] Added ~args.inputs.keyboard.active~ and ~args.inputs.controller.active~.
+   This property will return true if any of keys or buttons were pressed on the frame. It's useful
+   for instructions contextually to which input device the player is using.
+* 4.14
+** [Pro] [iOS] Fixed iOS binaries so that they will be accepted by TestFlight.
+   We have temporarily disabled $gtk.http_* apis until we isolate what part of that machinery
+   is causing the binary to be rejected by TestFlight (instead of waiting for Apple to fix the bug
+   on their end).
+** [Pro] [iOS] Fixed scaling issue for games running on the iPhone 13 mini.
+** [Support] ~$gtk.platform~ returns "Steam Deck" if the game is being run on the Steam Deck.
+** [Bugfix] Removed mouse wheel debug statements.
+** [Docs] Added docs for deploying to a local Steam Deck.
+* 4.13
+** [Indie] [Pro] [Support] Beta release of Steam distribution.
+   ~dragonruby-publish~ now supports the creation of a Steam package containing Linux, Mac, and Windows
+   binaries of your game. A "Deploying to Steam" section has been added to documentation (which is available
+   locally at http://localhost:9001 while DragonRuby is running, and online at docs.dragonruby.org).
+
+   This is a beta iteration with some rough edges. Let us know if you hit any snags and we'll improve
+   on what's there.
+
+   This enhancement to ~dragonruby-publish~ streamlines should prove to be a significant time
+   saver over creating payload using the Steamworks toolchain :-)
+** [Bugfix] Pixel arrays are now fully unlocked in the Standard license tier. I swear it'll work this time.
+** [Performance] Increased the polling interval between simulation ticks for web builds.
+   The faster interval helped top end machines, but taxed lower end machines a bit too much. Frame rates
+   will be more stable, but a little lower.
+** [Bugfix] Mouse wheel input will now be captured during game play recording.
+* 4.12
+** [Bugfix] Fixed Raspberry Pi and Web Builds.
+   Tweetcart updates had an unintended side effect and broke Raspberry Pi and Web. Regression suites
+   have been put into place to make sure this doesn't happen again. We are unsure of why only those platforms
+   failed, but think it's a bug in mRuby's byte-code compilation (further research needed).
+
+   The Tweetcart source has been mostly reverted except for the addition of the ~pixels!~ and ~color~
+   method. We will work with OSS contributers to flesh out a fuller api (and get closer to finding the
+   mRuby bug).
+* 4.11
+** [Support] $args.pixel_arrays unlocked for all license tiers!
+   All license tiers can now use both sound synthesis and pixel arrays, woo hoo!
+** [OSS] Tweetcart apis enhanced given that everyone can now use pixel arrays.
+   Source code for tweetcart.rb is available locally at =./docs/oss.txt= and
+   online at https://github.com/DragonRuby/dragonruby-game-toolkit-contrib/blob/main/dragon/tweetcart.rb.
+
+   You can download the GitHub version by invoking the following function in the DragonRuby Console:
+
+   $gtk.download_stb_rb "dragonruby", "dragonruby-game-toolkit-contrib", "tweetcart.rb"
+
+** [Support] A "Close Console" button is available in a production build.
+   It's helpful to have this button if you're running the game on a touch device w/o a keyboard.
+** [Bugfix] render_targets will no longer be randomly lost on Windows+DirectX when the game window is resized.
+   No really. This time we definitely maybe have this resolved.
+** [Performance] Performance improvements to web builds.
+   Invocation of ~tick~ should happen more frequently bringing web games closer to 60fps.
+* 4.10
+** [Samples] Added sample app that shows how to orchestrate a sequence of animations (eg cutscenes).
+   Sample app location: =./samples/08_tweening_lerping_easing_functions/08_cutscenes=
+** [Samples] Added sample app/reference implementation for a casual arcade game.
+   Sample app location: =samples/99_genre_arcade/squares=
+** [Samples] Added sample that show's how to create an animated button.
+   Sample app location: =./samples/08_tweening_lerping_easing_functions/04_pulsing_button=
+** [Samples] Added sample app that shows how to do drag and drop (leverages ~$args.inputs.mouse.held~).
+   Sample app location: =./samples/02_input_basics/04_mouse_drag_and_drop=
+** [Bugfix] dragonruby-publish ignores unrecognized files as opposed to failing (such as .DS_Store).
+** [Bugfix] dragonruby-publish gives a better error message if game icons are too large.
+** [Bugfix] render_targets will no longer be randomly lost on Windows+DirectX when the game window is resized.
+   NOTE: There was a lot of rewiring of outputs and render targets behind the scenes. Please bring up
+   issues on the DragonRuby Discord Server's feedback-bug-report channel: https://discord.com/channels/608064116111966245/895482347250655292
+** [Support] ~args.outputs.background_color~ now accepts both colors in Hash and Array format.
+** [Support] Added ~$gtk.reset_sprites "DIRECTORY"~.
+   Function will recursively go through the the directory provided and reset
+   all pngs/invalidate DR cached textures.
+** [OSS] Open sourced =./runtime/async_require.rb=.
+   Source code is under =./docs/oss.txt=
+** [Support] Added ~$gtk.download_stb_rb~ and ~$gtk.download_stb_rb_raw~.
+   These two functions can help facilitate the integration of external code files. OSS contributors
+   are encouraged to create libraries that all fit in one file (lowering the barrier to
+   entry for adoption).
+
+   Examples:
+
+   #+begin_src
+     def tick args
+     end
+
+     # option 1:
+     # source code will be downloaded from the specified GitHub url, and saved locally with a
+     # predefined folder convension.
+     $gtk.download_stb_rb "https://github.com/xenobrain/ruby_vectormath/blob/main/vectormath_2d.rb"
+
+     # option 2:
+     # source code will be downloaded from the specified GitHub username, repository, and file.
+     # code will be saved locally with a predefined folder convension.
+     $gtk.download_stb_rb "xenobrain", "ruby_vectormath", "vectormath_2d.rb"
+
+     # option 3:
+     # source code will be downloaded from a direct/raw url and saved to a direct/raw local path.
+     $gtk.download_stb_rb_raw "https://raw.githubusercontent.com/xenobrain/ruby_vectormath/main/vectormath_2d.rb",
+                              "lib/xenobrain/ruby_vectionmath/vectormath_2d.rb"
+   #+end_src
+* 4.9
+** [Support] ~anchor_x~, ~anchor_y~ has been added to labels, borders, and solids.
+   For labels the following lines are equivalent:
+   #+begin_src
+     def tick args
+       args.outputs.labels << {
+         x: 640,
+	 y: 360,
+	 text: "Hello World",
+	 alignment_enum: 1,
+	 vertical_alignment_enum: 1
+       }
+
+       args.outputs.labels << {
+         x: 640,
+	 y: 360,
+	 text: "Hello World",
+	 anchor_x: 0.5,
+	 anchor_y: 0.5
+       }
+     end
+   #+end
+
+   If ~alignment~ keys and ~anchor~ keys are both provided, the ~anchor~ keys
+   will be given precedence (their default value is ~nil~).
+
+   Borders and solids behave like sprites (see notes about ~anchor~ attributes in 4.8 change log).
+** [Support] ~args.geometry.intersect_rect?~ and ~args.geometry.inside_rect?~ respect ~anchor_x~ and ~anchor_y~.
+   Given the addition of the ~anchor~ properties to rect-based primitives, these geometry functions
+   have been updated to take the new properties into consideration when determining collision.
+
+   A special thank you to @Ceph@discord and @Dominic@dicord for making a valid case
+   for adding this functionality through the use of a sample app that ships with DR.
+** [Support] ~$gtk.set_window_scale(float_value)~ has been added.
+   This is a helper method that will resize your game window to a scaled 16:9 (or 9:16 for portrait mode) aspect ratio.
+
+   The float value that is passed into the method will be floored to the closest supported scale:
+   0.1 (160x90), 0.25 (320p), 0.5 (540p), 0.75 (960p), 1.0 (720p), 1.25 (HD+), 1.5 (1080p), 2.0 (1440p), 2.5 (1800p), 3.0 (4k), 4.0 (5k)
+
+   Note: This method does not change the logical resolution of 1280x720 (it just resizes your game window).
+** [Support] Added ~args.inputs.mouse.held~
+   This method compliments ~args.inputs.mouse.(click|down)~ and ~args.inputs.mouse.up~ (about damn time).
+** [Samples] Animation states sample app has been updated to leverage the new ~anchor_x~, ~anchor_y~ properties.
+   Sample app location: =./samples/03_rendering_sprites/03_animation_states=
+** [Samples] Clepto Frog sample app has been rewritten/significantly cleaned up.
+   The Clepto Frog platformer reference implementation has been cleaned up significantly.
+   The reference implementation covers the following concepts in a non-trivial way:
+   - Rendering a camera viewport with pan and zoom using render targets.
+   - Saving and loading game data from the file system.
+   - In-game map editor.
+   - Physics and AABB collision.
+** [Samples] Added sample app that covers ~args.layout.rect~ apis in landscape mode.
+   Originally this sample app was only written for portrait mode and was only available to
+   Pro users.
+   Sample app location: =./samples/07_advanced_rendering/18_layouts=
+
+   Note: ~args.layout.rect~ is an extremely valuable bit of machinery when it comes to laying out
+   menu systems and ui elements (definitely worth getting familiar with).
+** [Samples] Added sample app that shows how to convert from camera space to world space using matrices.
+   Sample app location: =./samples/07_advanced_rendering/16_matrix_camera_space_world_space=
+** [Bugfix] Minor typo fixes/elaborations added to the docs. Minor updates to purchase matrix on dragonruby.org and itch.io.
+* 4.8
+** [Bugfix] [Pro] [Android] ~dragonruby-publish~ generates apks and aab's that are compatible with SDK 33+.
+** [Support] Replay speed for recordings can be as high as 60x (increased from 7x).
+** [Support] ~anchor_x~ and ~anchor_y~ added to Sprites.
+   The default value for ~anchor_x~ and ~anchor_y~ is ~nil~. Setting the value to (for example) 0.5, 0.5
+   will shift the x left by 50% of the width and y down by 50% of the height.
+
+   Example:
+   #+begin_src
+     def tick args
+       # sprite's bottom left corner will be at 640, 360
+       args.outputs.sprites << { x: 640, y: 360, w: 30, h: 30, path: "sprites/square/blue.png" }
+
+       # sprite's bottom left corner will be at 625, 345 (sprite's center will be at 640, 360)
+       args.outputs.sprites << { x: 640, y: 360, anchor_x: 0.5, anchor_y: 0.5, w: 30, h: 30, path: "sprites/square/blue.png" }
+
+       # sprite's bottom left corner will be at 625, 360 (sprite is centered on the x axis, and bottom aligned on the y axis)
+       args.outputs.sprites << { x: 640, y: 360, anchor_x: 0.5, anchor_y: 0, w: 30, h: 30, path: "sprites/square/blue.png" }
+     end
+   #+end_src
+*** Advanced sprite rendering.
+    If you are using classes with ~draw_override~. The ~ffi_draw.draw_sprite_5~ function is available to use:
+
+    The argument order for ffi_draw.draw_sprite_5 is:
+    - x, y, w, h,
+    - path,
+    - angle,
+    - alpha, red_saturation, green_saturation, blue_saturation
+    - tile_x, tile_y, tile_w, tile_h,
+    - flip_horizontally, flip_vertically,
+    - angle_anchor_x, angle_anchor_y,
+    - source_x, source_y, source_w, source_h,
+    - blendmode_enum
+    - anchor_x
+    - anchor_y
+
+    See =./samples/09_performance/07_static_sprites_as_classes_with_custom_drawing= how to use ~draw_override~.
+** [Support] ~size_px~ added to Labels.
+   A label's size can be provided via ~size_enum~ or ~size_px~. If both are provided ~size_px~ will
+   be used (the default value of ~size_px~ is nil).
+   #+begin_src
+     def tick args
+       # render a label in the center of the screen with a pixel
+       # height of 22 pixels
+       args.outputs.labels << { x: 360,
+                                y: 640,
+				text: "Hello World."
+				size_px: 22,
+				alignment_enum: 1,
+				vertical_alignment_enum: 1 }
+     end
+   #+end_src
+** [Samples] Added sample app that shows how to create a camera with multiple targets
+   Sample located at: =./samples/07_advanced_rendering/07_simple_camera_multiple_targets=
+** [Samples] Added sample app that shows how to do raycasting with textures and projectiles.
+   Sample located at: =./samples/99_genre_3d/04_ray_caster_advanced=
+
+   A HUGE thank you to James (@68K@discord) for contributing this sample app and giving
+   us a solid starting point for creating a game like Doom.
+** [Bugfix] Numeric functions in docs are now categorized correctly.
+** [Support] [Pro] Web builds can now be published with HD and High DPI enabled.
+** [Support] Added ~args.inputs.key_up.char~
+   The property which will be the character that was just released
+   (similar to how ~args.inputs.key_down.char~ represents the
+   character that was just pressed)
+** [OSS] Open sourced the machinery that controls the processing of
+   --no-tick and --tick cli arguments under =./runtime/process_argv.rb=
+** [Support] [Advanced] Added ~$gtk.disable_nil_punning!~.
+   Nil punning in DR allows you to do the following:
+
+   #+begin_src
+     def tick args
+       args.state.player.loc.x ||= 100
+       args.state.player.armor.hp ||= 500
+     end
+   #+end_src
+
+   While the above syntax provides convenience while rapidly prototyping, it can lead to null
+   reference exceptions that are harder to track down as your project becomes more complex (and is
+   now less needed given that ~Hash~ can access ~key/value~ pairs as if they were attributes).
+   You can use ~$gtk.disable_nil_punning!~ to disable this capability. Doing so will require you
+   to specify the intermediary properties before you can set a value on leaf attributes.
+
+   Example:
+
+   #+begin_src
+     def tick args
+       # the following lines will throw an exception if nil punning is disabled
+       # args.state.player.loc.x ||= 100
+       # args.state.player.armor.hp ||= 500
+
+       # instead, you must do
+
+       # option 1
+       # fully define state using hashes
+       args.state.player ||= {
+         loc: {
+	   x: 100
+	 },
+	 armor: {
+	   hp: 500
+	 }
+       }
+
+       # OR
+
+       # option 2
+       # fully define state using entities
+       args.state.player ||= args.state.new_entity(:player)
+       args.state.player.loc ||= args.state.new_entity(:loc)
+       args.state.player.loc.x ||= 100
+       args.state.player.armor ||= args.state.new_entity(:armor, hp: 500)
+     end
+
+     # disabling nil punning must be done outside of tick
+     $gtk.disable_nil_punning!
+   #+end_src
+* 4.7
+** [Support] Sound Synthesis is now available at all license tiers, including Standard! Woo hoo!
+   Check out the sample app located at: =./samples/07_advanced_audio/02_sound_synthesis/=
+** [Samples] Sample app added that shows how to make a Fifteen Puzzle game.
+   Location of sample app: =./samples/99_genre_board_game/01_fifteen_puzzle=
+** [Bugfix] Standard definition rendering of labels was inaccurate for size_enum and window scales > 1280x720. This has been fixed.
+** [Bugfix] Documentation export escapes ruby code that would be interpreted as html.
+* 4.6
+** [Bugfix] Screenshot api ignores alpha transparency if ~a~ is 255.
+** [Bugfix] ~set_mouse_grab(2)~ fixed to behave correctly (it was definitely Ryan's fault).
+** [OSS] Open sourced ~$gtk.notify~ machinery.
+   Source code for ~GTK::Runtime::Notify~ in =./docs/oss.txt=.
+** [OSS] Open sourced ~$gtk.process_argsv~
+   Source code for ~GTK::Runtime::ProcessARGSV~ in =./docs/oss.txt=.
+** [OSS] Updated the following docs based on feedback in #oss-docs-contributions:
+   - Sound docs updated.
+   - Various typo and phrasing fixes.
+   - ~'~ (single tick) is scrubbed when generating href links for documentation export.
+   - Screenshot api docs updated.
+** [Samples] Sample app added that shows how to create a checkbox.
+   Location of sample: =samples/09_ui_controls/01_checkboxes=
+** [Samples] Sample app added that shows how create a button + label using a render_target.
+   Location of sample: =samples/07_advanced_rendering/06_buttons_as_render_targets=
+** [Samples] Sample app added that shows how to create an animation queue.
+   An animation queue is useful for visual effects such as a particle system.
+   Location of sample: =samples/08_tweening_lerping_easing_functions/06_animation_queues=
+** [Samples] Added sample app that shows how to do a very simple AABB collision.
+   Location of sample: =./samples/04_physics_and_collisions/01_simple_aabb_collision_with_map_editor=
+** [Samples] Added sample app that shows how to do a AABB collisions with a built in map editor.
+   Location of sample: =./samples/04_physics_and_collisions/01_simple_aabb_collision=
+** [Samples] Added sample app that shows how to create a render target composed of multiple sprites.
+   Location of sample: =./samples/07_advanced_rendering/01_render_targets_combining_sprites=
+** [Samples] Added sample app that shows ramp collision.
+   This sample app uses the new replay capabilities ~$gtk.replay_and_reset "replay.txt", speed: 2~. A replay
+   file is included with the sample so you can see how changing parts of the code affects collision.
+   Location of sample: =samples/04_physics_and_collisions/12_ramp_collision=
+** [Support] Added ~args.state.geometry.find_all_intersect_rect(rect, rects)~
+   Similar to ~args.state.geometry.find_intersect_rect~ but returns a collection opposed to just the first collision. This function is implemented in C.
+** [Support] Major enhancements to recording and replay functionality.
+*** ~$recording.on_replay_tick &block~ and ~$recording.on_recording_tick &block~ functions:
+    These functions can be used to execute code while a recording or replay is executing.
+
+    Example:
+
+    #+begin_src
+      def tick args
+        ....
+      end
+
+      $recording.on_replay_tick do |args|
+        # code will be called after each tick of a replay
+      end
+
+      $recording.on_recording_tick do |args|
+        # code will be called after each tick of a recording
+      end
+    #+end_src
+*** ~$gtk.reset_and_replay FILE, speed: (1 - 7)
+    Calling this function at the bottom of a file (outside of tick) will automatically reset your game and run the replay.
+
+    Example:
+
+    #+begin_src
+      def tick args
+        ....
+      end
+
+      # record a replay via the Console by using the menu item or running ~$record.start_recording SEED_NUMBER~.
+      # after your recording has been saved, you can use the following line to autoplay the recording
+      # on file save
+      $gtk.reset_and_replay "replay.txt", speed: 2
+    #+end_src
+*** ~$recording.start_replay~ accepts a ~speed:~ parameter.
+    From the console you can run ~$recording.start_replay FILE, speed: 2~. The maximum replay speed is ~7~.
+* 4.5
+** [Samples] Sample app that shows how to create a thick line using render targets.
+   Location of sample: =./samples/07_advanced_rendering/02_render_targets_thick_lines=
+** [Samples] Sample app that shows a large number of AABB collisions with gravity and physics.
+   Location of sample: =./samples/09_performance/09_collision_limits_aabb=
+   Demo video: https://youtu.be/HQTfqaIxSOA
+** [Samples] Sample app that shows advanced scene transitions (with global fade-in and fade-out)
+   Location of sample: =./samples/08_tweening_lerping_easing_functions/05_scene_transitions=
+** [Support] Added docs for ~args.gtk~ functions.
+** [Support] Added docs for ~args.geometry~ functions.
+** [Support] Added ~Numeric#lerp(to, step)~ and ~Numeric#remap(r1_begin, r1_end, r2_begin, r2_end)~.
+** [Support] Added Easing definitions ~smooth_start_(quad|cube|quart|quint)~ and ~smooth_stop_(quad|cube|quart|quint)~
+   Example:
+
+   #+begin_src
+    def tick args
+      args.state.box ||= {
+        x: 0,
+        y: 0,
+        w: 40,
+        h: 40
+      }
+
+      final_x = 1240
+      final_y = 680
+
+      # if space key is pressed, start animation
+      if args.inputs.keyboard.key_down.space
+        args.state.animation_start_at = args.state.tick_count
+      end
+
+      progress_x = 0
+      progress_y = 0
+
+      if args.state.animation_start_at
+        perc = args.easing.ease args.state.animation_start_at,     # start tick
+                                args.state.tick_count,             # current tick
+                                60,                                # duration
+                                :smooth_stop_quint                 # easing definition
+
+        progress_x = final_x * perc
+        progress_y = final_y * perc
+      end
+
+      args.outputs.solids << {
+        x: progress_x,
+        y: progress_y,
+        w: 40,
+        h: 40
+      }
+    end
+   #+end_src
+* 4.4
+** [Bugfix] Triangle rendering of solids respects r,g,b values.
+* 4.3
+** [Bugfix] Simpler encoding of a game's web-build working directory.
+* 4.2
+** [Bugfix] Update to web-based builds to remove offset within the Itch.io iFrame. This is definitely maybe fixed this time.
+** [Bugfix] Ensure that a game's web-build working directory is unique from game to game.
+* 4.1
+** [Bugfix] Update to web-based builds to remove offset within the Itch.io iFrame.
+* 4.0
+** [BREAKING] This release contains two very minor breaking changes (don't panic).
+   1. ~args.inputs.mouse.point~ no longer returns a ~Tuple/Array~ and
+      instead returns a ~Hash~ with ~x~ and ~y~ keys.
+
+      NOTE: You will ONLY see an issue with this change if you were
+      destructing the ~Tuple~.
+
+      Lines like the following:
+
+      #+begin_src ruby
+        # destructure tuple no longer supported
+        x, y = args.inputs.mouse.point
+      #+end_src
+
+      Must be changed to:
+
+      #+begin_src ruby
+        # Hash is returned (which cannot be destructured)
+        point = args.inputs.mouse.point
+        x, y = point.x, point.y
+      #+end_src
+
+   2. ~args.inputs.directional_vector~ has a similar change and can no longer
+       be destructured.
+
+   That's it for the breaking changes!
+** [Pro] [iOS] C Extensions fixed so that they are accepted by TestFlight.
+   A sample app has been added that shows how to package C Extensions for iOS:
+   =/samples/12_c_extensions/05_ios_c_extensions/=
+** [Pro] [Android] Android SDK target is now version 33 (android-ndk-r25b).
+** [Bugfix] [Pro] ~all_screen_max_scale~ in combination with ~highdpi~ is respected for both
+   landscape and portrait games.
+** [Samples] Turn based RPG sample app has been added.
+   The sample app is located at: =./samples/99_genre_rpg_turn_based/turn_based_battle=.
+** [Performance] Performance improvements to ~Entities~.
+   Both ~args.state.new_entity~ and ~args.state.new_entity_strict~
+   have gotten some performance improvements. The perf boost to
+   ~new_entity_strict~ is significant.
+** [Performance] [Support] ~args.gtk.warn_array_primitives!~ added.
+   While array based primitives are simple to create, they come with a performance
+   penalty. If you find that you're having performance issues, you can use ~warn_array_primitives~
+   to find places in your code where array primitives are used/created
+   (so you can convert them to ~Hashes~):
+
+   #+begin_src ruby
+     def tick args
+       # add this line to the top of your tick method
+       args.gtk.warn_array_primitives!
+
+       # a log entry will be printed to the Console anywhere array primitives are being used
+
+       # example
+       args.outputs.labels << [100, 100, "Hello"]
+
+       # example
+       rect_1 = [10, 100, 50, 50]
+       rect_2 = [10, 100, 50, 50]
+       args.geometry.intersect_rect? rect_1, rect_2
+     end
+   #+end_src
+** [Support] Added out of bounds warning for sprite's ~(source|tile)_(x|y|w|h)~ properties.
+   You will be warned if a specified source/tile rect goes past the boundaries of a sprite.

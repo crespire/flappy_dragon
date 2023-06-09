@@ -1,0 +1,5 @@
+# itch.io manifest...
+[[actions]]
+name = "launch"
+path = "flappy_dragon/dragonruby"
+

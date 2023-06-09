@@ -1,0 +1,6 @@
+devid=dragonruby
+devtitle=DragonRuby LLC
+gameid=audiomixer
+gametitle=Audio Mixer
+version=1.0
+icon=metadata/icon.png
